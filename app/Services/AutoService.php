@@ -29,4 +29,12 @@ class AutoService
     {
         return $this->autoRepository->paginate();
     }
+
+    public function insertNewCar($make, $model)
+    {
+        $auto = $this->autoRepository->create([
+           'make' => $make,
+           'model' => $model,
+        ]);
+    }
 }

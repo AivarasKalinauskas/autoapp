@@ -14,10 +14,4 @@ class AutoRepository extends Repository
     {
         return Auto::class;
     }
-
-    public function findBySlug(string $slug)
-    {
-        return $this->makeQuery()->where('slug', '=', $slug)
-            ->firstOrFail();
-    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Auto;
+use App\Http\Requests\AutoStoreRequest;
 use App\Services\AutoService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -19,13 +20,14 @@ class AutoController extends Controller
     public function __construct(AutoService $autoService)
     {
         $this->autoService = $autoService;
+        $this->middleware('auth');
     }
 
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
     public function index(): View
     {
@@ -43,7 +45,7 @@ class AutoController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.auto.create');
     }
 
     /**
@@ -52,9 +54,12 @@ class AutoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AutoStoreRequest $request)
     {
-        //
+        $this->autoService->insertNewCar($request->getMake(), $request->getModel());
+
+        return redirect()->route('home.index')
+            ->with('status', 'Auto inserted successfully!');
     }
 
     /**
