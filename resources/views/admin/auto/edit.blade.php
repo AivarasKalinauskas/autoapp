@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card text-white bg-secondary">
-                    <div class="card-header"><h1>{{ __('Insert Auto') }}</h1></div>
+                    <div class="card-header"><h1>{{ __('Edit Auto') }}</h1></div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -24,22 +24,23 @@
                                 </div>
                             @endif
 
-                        <form action="{{ route('home.store') }}" method="post"
+                        <form action="{{ route('home.update', ['auto' => $auto->id]) }}" method="post"
                               enctype="multipart/form-data">
 
                             @csrf
+                            @method('put')
 
                             <div class="form-group">
                                 <label for="make">{{ __('Make') }}</label>
                                 <input type="text" id="make" name="make"
                                        class="form-control"
-                                       value="{{ old('make') }}">
+                                       value="{{ old('make', $auto->make) }}">
                             </div>
 
                             <div class="form-group">
                                 <label for="model">{{ __('Model') }}</label>
                                 <input class="form-control" id="model"
-                                          name="model" value="{{ old('model') }}">
+                                       name="model" value="{{ old('model', $auto->model) }}">
                             </div>
 
                             <div class="form-group">
@@ -48,11 +49,13 @@
                                        id="photo" name="photo" value="">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group d-inline-flex">
                                 <input class="btn btn-outline-light"
                                        type="submit" name="submit"
-                                       value="{{ __('Insert') }}">
+                                       value="{{ __('Update') }}">
                             </div>
+
+                            <a class="btn btn-outline-light" href="{{ route('home.index') }}">Close</a>
 
                         </form>
 

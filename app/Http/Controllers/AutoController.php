@@ -6,6 +6,7 @@ use App\Auto;
 use App\Http\Requests\AutoStoreRequest;
 use App\Services\AutoService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class AutoController extends Controller
@@ -41,7 +42,7 @@ class AutoController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -52,11 +53,15 @@ class AutoController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(AutoStoreRequest $request)
     {
-        $this->autoService->insertNewCar($request->getMake(), $request->getModel());
+        $this->autoService->insertNewCar(
+            $request->getMake(),
+            $request->getModel(),
+            $request->getPhoto()
+            );
 
         return redirect()->route('home.index')
             ->with('status', 'Auto inserted successfully!');
@@ -65,45 +70,63 @@ class AutoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Auto  $auto
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return Response
      */
-    public function show(Auto $auto)
+    public function show($id)
     {
-        //
+        $auto = $this->autoService->getById($id);
+
+        return view('admin.auto.show', [
+            'auto' => $auto,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Auto  $auto
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function edit(Auto $auto)
+    public function edit($id)
     {
-        //
+        $auto = $this->autoService->getById($id);
+
+        return view('admin.auto.edit', [
+            'auto' => $auto,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Auto  $auto
-     * @return \Illuminate\Http\Response
+     * @param AutoStoreRequest $request
+     * @param $id
+     * @return void
      */
-    public function update(Request $request, Auto $auto)
+    public function update(AutoStoreRequest $request, $id)
     {
-        //
+        $this->autoService->updateById(
+            $id,
+            $request->getMake(),
+            $request->getModel(),
+            $request->getPhoto()
+        );
+
+        return redirect()->route('home.index')
+            ->with('status', 'Auto updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Auto  $auto
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return Response
      */
-    public function destroy(Auto $auto)
+    public function destroy($id)
     {
-        //
+        $this->autoService->destroyById($id);
+
+        return redirect()->route('home.index')->with('status', 'Auto deleted!');
     }
 }
